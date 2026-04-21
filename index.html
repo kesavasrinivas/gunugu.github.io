@@ -202,11 +202,13 @@
     .about-img-main {
       position: absolute; top: 0; left: 0; right: 5rem; bottom: 5rem;
       border-radius: 2px; overflow: hidden;
+      background: linear-gradient(135deg, #d0d0d0, #a8a8a8);
     }
     .about-img-accent {
       position: absolute; bottom: 0; right: 0; width: 55%; height: 55%;
       border-radius: 2px; overflow: hidden;
       border: 6px solid var(--cream);
+      background: linear-gradient(135deg, #c8c8c8, #e8e8e8);
     }
     .about-badge {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -530,6 +532,86 @@
       .about-stats { grid-template-columns: 1fr 1fr; }
       .categories-grid { grid-template-columns: repeat(2, 1fr); }
     }
+
+    /* ===================== QUICK VIEW MODAL ===================== */
+    #quickViewModal {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+    }
+    #quickViewModal.open { display: block; }
+    .qv-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      animation: fadeIn 0.25s ease;
+    }
+    .qv-panel {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff; border-radius: 4px;
+      width: min(900px, 94vw); max-height: 90vh;
+      overflow-y: auto; box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes slideUp { from{opacity:0;transform:translate(-50%,-46%)} to{opacity:1;transform:translate(-50%,-50%)} }
+    .qv-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid #ddd; background: #fff;
+      font-size: 1.2rem; cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .qv-close:hover { background: #f3f1ed; }
+    .qv-body {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .qv-img-wrap {
+      aspect-ratio: 1; overflow: hidden;
+      background: linear-gradient(135deg, #d8d8d8, #f0f0f0);
+    }
+    .qv-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .qv-info {
+      padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .qv-tag-wrap { min-height: 24px; }
+    .qv-tag {
+      display: inline-block;
+      background: var(--accent); color: #fff;
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.25rem 0.7rem; border-radius: 2px;
+    }
+    .qv-tag:empty { display: none; }
+    .qv-category { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver-dk); }
+    .qv-name { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--dark); line-height: 1.15; margin: 0.2rem 0; }
+    .qv-price { font-size: 1.15rem; color: var(--accent); font-weight: 600; }
+    .qv-purity { font-size: 0.75rem; color: var(--silver-dk); letter-spacing: 0.08em; }
+    .qv-divider { height: 1px; background: #eee; margin: 0.6rem 0; }
+    .qv-desc { font-size: 0.9rem; line-height: 1.75; color: var(--mid); font-weight: 300; }
+    .qv-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    .qv-btn-primary {
+      flex: 1; text-align: center;
+      background: #25D366; color: #fff;
+      padding: 0.8rem 1rem; border-radius: 2px;
+      font-size: 0.78rem; font-family: 'Jost', sans-serif;
+      font-weight: 600; letter-spacing: 0.08em;
+      transition: opacity 0.3s;
+    }
+    .qv-btn-primary:hover { opacity: 0.88; }
+    .qv-btn-outline {
+      flex: 1; text-align: center;
+      border: 1px solid var(--dark); color: var(--dark);
+      padding: 0.8rem 1rem; border-radius: 2px;
+      font-size: 0.78rem; font-family: 'Jost', sans-serif;
+      font-weight: 500; letter-spacing: 0.08em;
+      transition: background 0.3s, color 0.3s;
+    }
+    .qv-btn-outline:hover { background: var(--dark); color: #fff; }
+    .qv-note { font-size: 0.68rem; color: var(--silver-dk); letter-spacing: 0.06em; margin-top: 0.4rem; }
+    @media (max-width: 640px) {
+      .qv-body { grid-template-columns: 1fr; }
+      .qv-img-wrap { aspect-ratio: 4/3; }
+      .qv-info { padding: 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -610,11 +692,15 @@
   <div class="about-images">
     <div class="about-img-main">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1573408301185-9519f94f6f7c?w=800&q=80&auto=format&fit=crop" alt="Gunugu Silver Jewellery craftsmanship" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=800&q=80&auto=format&fit=crop"
+           alt="Gunugu Silver Jewellery craftsmanship" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&q=80&auto=format&fit=crop'" />
     </div>
     <div class="about-img-accent">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&q=80&auto=format&fit=crop" alt="Silver jewellery detail" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&q=80&auto=format&fit=crop"
+           alt="Silver jewellery detail" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&q=80&auto=format&fit=crop'" />
     </div>
     <div class="about-badge">
       <span class="num">10+</span>
@@ -664,10 +750,14 @@
   <div class="product-grid">
 
     <!-- Card 1 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Tribal Oxidised Ring" data-category="Rings"
+         data-price="₹ 650 onwards" data-purity="925 Sterling Silver" data-tag="New"
+         data-desc="A handcrafted tribal oxidised ring inspired by ancient Indian art forms. Made in pure 925 sterling silver with an antique finish that never goes out of style."
+         data-img="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80&auto=format&fit=crop" alt="Silver Rings" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80&auto=format&fit=crop" alt="Silver Rings" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
         <span class="product-tag new">New</span>
       </div>
@@ -680,10 +770,14 @@
     </div>
 
     <!-- Card 2 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Layered Filigree Necklace" data-category="Necklaces"
+         data-price="₹ 2,200 onwards" data-purity="925 Sterling Silver" data-tag=""
+         data-desc="An elegant layered filigree necklace featuring delicate silver wirework. Inspired by Odisha's famous filigree craft tradition, reimagined in a contemporary layered style."
+         data-img="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80&auto=format&fit=crop" alt="Silver Necklace" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80&auto=format&fit=crop" alt="Silver Necklace" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
       </div>
       <div class="product-info">
@@ -695,10 +789,14 @@
     </div>
 
     <!-- Card 3 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Rajasthani Cuff Bracelet" data-category="Bracelets"
+         data-price="₹ 1,400 onwards" data-purity="925 Sterling Silver" data-tag="Bestseller"
+         data-desc="A bold, wide cuff bracelet drawn from Rajasthani craft heritage. Engraved with intricate floral motifs and finished in polished 925 sterling silver. A true statement piece."
+         data-img="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1602751584552-8ba5b7d5a22f?w=600&q=80&auto=format&fit=crop" alt="Silver Bracelet" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80&auto=format&fit=crop" alt="Silver Bracelet" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
         <span class="product-tag">Bestseller</span>
       </div>
@@ -711,10 +809,14 @@
     </div>
 
     <!-- Card 4 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Jhumka Drop Earrings" data-category="Earrings"
+         data-price="₹ 900 onwards" data-purity="925 Sterling Silver" data-tag="New"
+         data-desc="Classic Indian jhumka drop earrings in polished 925 sterling silver. Lightweight yet substantial, these pair beautifully with both traditional and fusion outfits."
+         data-img="https://images.unsplash.com/photo-1630019925016-c90bee4bbe69?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1588444650733-d0d3d8b9c6e9?w=600&q=80&auto=format&fit=crop" alt="Silver Earrings" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1630019925016-c90bee4bbe69?w=600&q=80&auto=format&fit=crop" alt="Silver Earrings" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
         <span class="product-tag new">New</span>
       </div>
@@ -727,10 +829,14 @@
     </div>
 
     <!-- Card 5 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Ghungroo Anklet Pair" data-category="Anklets"
+         data-price="₹ 750 onwards" data-purity="925 Sterling Silver" data-tag=""
+         data-desc="A melodic silver anklet pair adorned with traditional ghungroo bells. Handcrafted in 925 sterling silver — the gentle chime adds charm to every step you take."
+         data-img="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80&auto=format&fit=crop" alt="Silver Anklet" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80&auto=format&fit=crop" alt="Silver Anklet" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
       </div>
       <div class="product-info">
@@ -742,10 +848,14 @@
     </div>
 
     <!-- Card 6 -->
-    <div class="product-card">
+    <div class="product-card"
+         data-name="Lotus Charm Pendant" data-category="Pendants"
+         data-price="₹ 1,100 onwards" data-purity="925 Sterling Silver" data-tag="Bestseller"
+         data-desc="A dainty lotus charm pendant in 925 sterling silver — a symbol of purity and new beginnings. Comes with a matching 18-inch silver chain. Perfect as a meaningful gift."
+         data-img="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=85&auto=format&fit=crop">
       <div class="product-img-wrap">
-        <!-- REPLACE with your actual product photo -->
-        <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80&auto=format&fit=crop" alt="Silver Pendant" loading="lazy" />
+        <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80&auto=format&fit=crop" alt="Silver Pendant" loading="lazy"
+             onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=600&q=80&auto=format&fit=crop'" />
         <div class="product-overlay"><span class="product-overlay-btn">Quick View</span></div>
         <span class="product-tag">Bestseller</span>
       </div>
@@ -768,27 +878,32 @@
   <div class="categories-grid">
     <div class="category-card">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&q=80&auto=format&fit=crop" alt="Rings" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&q=80&auto=format&fit=crop" alt="Rings" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80&auto=format&fit=crop'" />
       <div class="category-overlay"><span class="category-name">Rings</span></div>
     </div>
     <div class="category-card">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1588444650733-d0d3d8b9c6e9?w=400&q=80&auto=format&fit=crop" alt="Earrings" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1630019925016-c90bee4bbe69?w=400&q=80&auto=format&fit=crop" alt="Earrings" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&q=80&auto=format&fit=crop'" />
       <div class="category-overlay"><span class="category-name">Earrings</span></div>
     </div>
     <div class="category-card">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80&auto=format&fit=crop" alt="Necklaces" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&q=80&auto=format&fit=crop" alt="Necklaces" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80&auto=format&fit=crop'" />
       <div class="category-overlay"><span class="category-name">Necklaces</span></div>
     </div>
     <div class="category-card">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1602751584552-8ba5b7d5a22f?w=400&q=80&auto=format&fit=crop" alt="Bracelets" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&q=80&auto=format&fit=crop" alt="Bracelets" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&q=80&auto=format&fit=crop'" />
       <div class="category-overlay"><span class="category-name">Bracelets</span></div>
     </div>
     <div class="category-card">
       <!-- REPLACE with your own photo -->
-      <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80&auto=format&fit=crop" alt="Anklets" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80&auto=format&fit=crop" alt="Anklets" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80&auto=format&fit=crop'" />
       <div class="category-overlay"><span class="category-name">Anklets</span></div>
     </div>
   </div>
@@ -849,31 +964,37 @@
   <div class="gallery-grid">
     <!-- REPLACE these images with your Instagram photos -->
     <div class="gallery-item">
-      <img src="https://images.unsplash.com/photo-1573408301185-9519f94f6f7c?w=700&q=80&auto=format&fit=crop" alt="Silver jewellery gallery" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=700&q=80&auto=format&fit=crop"
+           alt="Silver jewellery gallery" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=700&q=80&auto=format&fit=crop'" />
       <div class="gallery-item-overlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
       </div>
     </div>
     <div class="gallery-item">
-      <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80&auto=format&fit=crop" alt="Silver rings" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80&auto=format&fit=crop" alt="Silver rings" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&q=80&auto=format&fit=crop'" />
       <div class="gallery-item-overlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
       </div>
     </div>
     <div class="gallery-item">
-      <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=500&q=80&auto=format&fit=crop" alt="Silver necklace" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=500&q=80&auto=format&fit=crop" alt="Silver necklace" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80&auto=format&fit=crop'" />
       <div class="gallery-item-overlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
       </div>
     </div>
     <div class="gallery-item">
-      <img src="https://images.unsplash.com/photo-1588444650733-d0d3d8b9c6e9?w=500&q=80&auto=format&fit=crop" alt="Silver earrings" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1630019925016-c90bee4bbe69?w=500&q=80&auto=format&fit=crop" alt="Silver earrings" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&q=80&auto=format&fit=crop'" />
       <div class="gallery-item-overlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
       </div>
     </div>
     <div class="gallery-item">
-      <img src="https://images.unsplash.com/photo-1602751584552-8ba5b7d5a22f?w=500&q=80&auto=format&fit=crop" alt="Silver bracelet" loading="lazy" />
+      <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&q=80&auto=format&fit=crop" alt="Silver bracelet" loading="lazy"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&q=80&auto=format&fit=crop'" />
       <div class="gallery-item-overlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
       </div>
@@ -1092,6 +1213,35 @@
   </div>
 </footer>
 
+<!-- ==================== QUICK VIEW MODAL ==================== -->
+<div id="quickViewModal" role="dialog" aria-modal="true" aria-label="Quick View">
+  <div class="qv-backdrop"></div>
+  <div class="qv-panel">
+    <button class="qv-close" aria-label="Close">&times;</button>
+    <div class="qv-body">
+      <div class="qv-img-wrap">
+        <img id="qvImg" src="" alt="" />
+      </div>
+      <div class="qv-info">
+        <div class="qv-tag-wrap"><span id="qvTag" class="qv-tag"></span></div>
+        <div id="qvCategory" class="qv-category"></div>
+        <h2 id="qvName" class="qv-name"></h2>
+        <div id="qvPrice" class="qv-price"></div>
+        <div id="qvPurity" class="qv-purity">925 Sterling Silver</div>
+        <div class="qv-divider"></div>
+        <p id="qvDesc" class="qv-desc"></p>
+        <div class="qv-actions">
+          <a href="https://wa.me/919100422171?text=Hi! I'm interested in the " id="qvWhatsApp" target="_blank" rel="noopener noreferrer" class="qv-btn-primary">
+            💬 Enquire on WhatsApp
+          </a>
+          <a href="tel:+919100422171" class="qv-btn-outline">📞 Call Us</a>
+        </div>
+        <div class="qv-note">Custom sizing &amp; engraving available · Free gift packaging</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Back to top -->
 <button id="backToTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
@@ -1122,6 +1272,71 @@
     e.target.reset();
     setTimeout(() => msg.style.display = 'none', 5000);
   }
+
+  // ==================== QUICK VIEW MODAL ====================
+  const modal      = document.getElementById('quickViewModal');
+  const backdrop   = modal.querySelector('.qv-backdrop');
+  const closeBtn   = modal.querySelector('.qv-close');
+
+  function openQuickView(card) {
+    const name     = card.dataset.name     || '';
+    const category = card.dataset.category || '';
+    const price    = card.dataset.price    || '';
+    const purity   = card.dataset.purity   || '925 Sterling Silver';
+    const tag      = card.dataset.tag      || '';
+    const desc     = card.dataset.desc     || '';
+    const imgSrc   = card.dataset.img      || card.querySelector('img')?.src || '';
+
+    document.getElementById('qvImg').src        = imgSrc;
+    document.getElementById('qvImg').alt        = name;
+    document.getElementById('qvName').textContent     = name;
+    document.getElementById('qvCategory').textContent = category;
+    document.getElementById('qvPrice').textContent    = price;
+    document.getElementById('qvPurity').textContent   = purity;
+    document.getElementById('qvDesc').textContent     = desc;
+
+    const tagEl = document.getElementById('qvTag');
+    tagEl.textContent = tag;
+    tagEl.style.display = tag ? 'inline-block' : 'none';
+
+    // Prefill WhatsApp message with product name
+    const waLink = document.getElementById('qvWhatsApp');
+    waLink.href = `https://wa.me/919100422171?text=Hi! I'm interested in the ${encodeURIComponent(name)}. Could you please share more details?`;
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeQuickView() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Wire up every Quick View button
+  document.querySelectorAll('.product-overlay-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.product-card');
+      if (card) openQuickView(card);
+    });
+  });
+
+  // Also allow clicking the whole card image area
+  document.querySelectorAll('.product-img-wrap').forEach(wrap => {
+    wrap.addEventListener('click', () => {
+      const card = wrap.closest('.product-card');
+      if (card) openQuickView(card);
+    });
+  });
+
+  // Close on backdrop click or close button
+  backdrop.addEventListener('click', closeQuickView);
+  closeBtn.addEventListener('click', closeQuickView);
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeQuickView();
+  });
 
   // Intersection Observer – fade-in sections
   const observer = new IntersectionObserver((entries) => {
